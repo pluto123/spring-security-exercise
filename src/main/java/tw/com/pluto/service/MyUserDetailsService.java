@@ -20,7 +20,7 @@ public class MyUserDetailsService implements UserDetailsService {
         UserDetails userDetails = User.builder()
                 .username("user123")
                 .password(passwordEncoder().encode("user123")) // 對密碼加密，不儲存明碼
-                .roles("USER")
+                .roles("ADMIN")
                 .build();
 
         return userDetails;
