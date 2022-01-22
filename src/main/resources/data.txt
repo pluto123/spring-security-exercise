@@ -7,3 +7,11 @@ INSERT INTO user (id, username, password, email, enabled, accountNonExpired, cre
 	VALUES (2, 'steven', '{bcrypt}$2a$12$D3ovZHLx7SEhHByV2IBwnOkDYFGLvaX9xcUmhin3rXYmP4qHWbPdq', 'steven@gmail.com', 1, 1, 1, 1);
 
 INSERT INTO role_user (role_id, user_id) VALUES (1, 1),(2, 2);
+
++----------+-----------+-------+
+| username | password  | role  |
++==========+===========+=======+
+| amy      | amy123    | ADMIN |
++----------+-----------+-------+
+| steven   | steven123 | USER  |
++----------+-----------+-------+
