@@ -8,12 +8,15 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import tw.com.pluto.security.MyAccessDeny;
 import tw.com.pluto.security.MyAuthenticationProvider;
 
 @Configuration
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     MyAuthenticationProvider myAuthenticationProvider;
+    @Autowired
+    MyAccessDeny myAccessDeny;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -28,7 +31,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/").permitAll()
                 .mvcMatchers("/user/**").hasRole("USER")
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .anyRequest().authenticated().and()
+                .exceptionHandling().accessDeniedHandler(myAccessDeny);
     }
 
     @Bean
