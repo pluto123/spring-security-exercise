@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import tw.com.pluto.security.MyAccessDeny;
+import tw.com.pluto.security.MyAuthenticationFailureHandler;
 import tw.com.pluto.security.MyAuthenticationProvider;
 
 @Configuration
@@ -17,6 +18,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyAuthenticationProvider myAuthenticationProvider;
     @Autowired
     MyAccessDeny myAccessDeny;
+    @Autowired
+    MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -26,7 +29,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .formLogin().and()
+                .formLogin().failureHandler(myAuthenticationFailureHandler).and()
                 .authorizeRequests()
                 .mvcMatchers("/").permitAll()
                 .mvcMatchers("/user/**").hasRole("USER")
