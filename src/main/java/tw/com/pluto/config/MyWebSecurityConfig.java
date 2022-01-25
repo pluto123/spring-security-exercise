@@ -22,6 +22,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
     @Autowired
     MyLogoutSuccessHandler myLogoutSuccessHandler;
+    @Autowired
+    MyAuthenticationEntryPoint myAuthenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -30,6 +32,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable();
         http
                 .formLogin()
                 .failureHandler(myAuthenticationFailureHandler)
@@ -42,7 +45,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/user/**").hasRole("USER")
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated().and()
-                .exceptionHandling().accessDeniedHandler(myAccessDeny);
+                .exceptionHandling()
+                .accessDeniedHandler(myAccessDeny)
+                .authenticationEntryPoint(myAuthenticationEntryPoint);
     }
 
     @Bean
