@@ -8,16 +8,16 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import tw.com.pluto.security.MyUserDetailsService;
+import tw.com.pluto.security.MyAuthenticationProvider;
 
 @Configuration
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    MyUserDetailsService myUserDetailsService;
+    MyAuthenticationProvider myAuthenticationProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
     @Override
