@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import tw.com.pluto.security.MyAccessDeny;
 import tw.com.pluto.security.MyAuthenticationFailureHandler;
 import tw.com.pluto.security.MyAuthenticationProvider;
+import tw.com.pluto.security.MyAuthenticationSuccessHandler;
 
 @Configuration
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -20,6 +21,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyAccessDeny myAccessDeny;
     @Autowired
     MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+    @Autowired
+    MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -28,8 +31,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable();
         http
-                .formLogin().failureHandler(myAuthenticationFailureHandler).and()
+                .formLogin()
+                .failureHandler(myAuthenticationFailureHandler)
+                .successHandler(myAuthenticationSuccessHandler).and()
                 .authorizeRequests()
                 .mvcMatchers("/").permitAll()
                 .mvcMatchers("/user/**").hasRole("USER")
