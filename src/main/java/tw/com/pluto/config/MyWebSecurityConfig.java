@@ -48,7 +48,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .accessDeniedHandler(myAccessDeny)
                 .authenticationEntryPoint(myAuthenticationEntryPoint).and()
-                .csrf().ignoringAntMatchers("/login").csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .csrf()
+                .ignoringAntMatchers("/login")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Bean
