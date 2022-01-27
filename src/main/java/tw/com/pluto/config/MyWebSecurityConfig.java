@@ -8,8 +8,11 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import tw.com.pluto.security.*;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,6 +28,17 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyLogoutSuccessHandler myLogoutSuccessHandler;
     @Autowired
     MyAuthenticationEntryPoint myAuthenticationEntryPoint;
+    @Autowired
+    MyUserDetailsService myUserDetailsService;
+    @Autowired
+    DataSource dataSource;
+
+    @Bean
+    JdbcTokenRepositoryImpl jdbcTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -47,10 +61,13 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated().and()
                 .exceptionHandling()
                 .accessDeniedHandler(myAccessDeny)
-                .authenticationEntryPoint(myAuthenticationEntryPoint).and()
+                .and()
                 .csrf()
                 .ignoringAntMatchers("/login")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                .rememberMe()
+                .userDetailsService(myUserDetailsService)
+                .tokenRepository(jdbcTokenRepository());
     }
 
     @Bean
