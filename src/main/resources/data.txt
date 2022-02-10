@@ -1,0 +1,17 @@
+INSERT INTO role (name) VALUES ('ROLE_ADMIN'),('ROLE_USER');
+
+INSERT INTO user (id, username, password, email, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked)
+	VALUES (1, 'amy', '{bcrypt}$2a$12$zyChV73xSbrS24A8b59tN.vnMkVx/AxhfBxAa/j.sAQOtXyy6bPtW', 'amy@gmail.com', 1, 1, 1, 1);
+
+INSERT INTO user (id, username, password, email, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked)
+	VALUES (2, 'steven', '{bcrypt}$2a$12$D3ovZHLx7SEhHByV2IBwnOkDYFGLvaX9xcUmhin3rXYmP4qHWbPdq', 'steven@gmail.com', 1, 1, 1, 1);
+
+INSERT INTO role_user (role_id, user_id) VALUES (1, 1),(2, 2);
+
++----------+-----------+-------+
+| username | password  | role  |
++==========+===========+=======+
+| amy      | amy123    | ADMIN |
++----------+-----------+-------+
+| steven   | steven123 | USER  |
++----------+-----------+-------+
