@@ -23,3 +23,7 @@ spring:
       org:
         hibernate:
           type: trace
+
+jwt:
+  secret_key: 4Kkn7n4OIHhFvc2KeKzJbDiZRXeuiHBbdKxmJu2YheeYeLw6DMQU7ZZb_Q31GU3eXPFn5WRGptW2F-qNMmPc3A
+  expire_time: 120

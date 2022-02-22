@@ -8,7 +8,10 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tw.com.pluto.security.JwtAuthFilter;
 import tw.com.pluto.security.MyUserDetailsService;
 import tw.com.pluto.security.entry.UnauthorizedEntryPoint;
 import tw.com.pluto.security.handler.MyAccessDeniedHandler;
@@ -30,6 +33,8 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     MyAccessDeniedHandler myAccessDeniedHandler;
     @Autowired
     UnauthorizedEntryPoint unauthorizedEntryPoint;
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -51,7 +56,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID").and()  // 刪除 SESSION Cookie
                 .exceptionHandling()
                 .accessDeniedHandler(myAccessDeniedHandler)  // 無權限訪問的處理程序
-                .authenticationEntryPoint(unauthorizedEntryPoint); // 未驗證時的處理程序
+                .authenticationEntryPoint(unauthorizedEntryPoint) // 未驗證時的處理程序
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

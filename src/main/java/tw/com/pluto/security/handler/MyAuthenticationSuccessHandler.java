@@ -5,15 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import tw.com.pluto.security.utils.JwtUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -21,11 +25,21 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Map<String, String> message = new LinkedHashMap<>();
+        List<String> grantedAuthorityList = new ArrayList<>();
+        for(GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
+            System.out.println(""+ grantedAuthority);
+            grantedAuthorityList.add(grantedAuthority.toString());
+        }
+        String token = jwtUtil.createToken(authentication.getName(), grantedAuthorityList);
         message.put("message", "登入成功");
 
+        message.put("token", token);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
