@@ -32,14 +32,12 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Map<String, String> message = new LinkedHashMap<>();
         List<String> grantedAuthorityList = new ArrayList<>();
-        for(GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
-            System.out.println(""+ grantedAuthority);
+        for(GrantedAuthority grantedAuthority : authentication.getAuthorities()) {  // 取得權限
             grantedAuthorityList.add(grantedAuthority.toString());
         }
-        String token = jwtUtil.createToken(authentication.getName(), grantedAuthorityList);
+        String token = jwtUtil.createToken(authentication.getName(), grantedAuthorityList);  // 將權限附加到 TOKEN，此處只是做示範，在生產環境中並不需要
         message.put("message", "登入成功");
-
-        message.put("token", token);
+        message.put("token", token);  // 附加 token 傳給使用者
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

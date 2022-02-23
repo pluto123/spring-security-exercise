@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authAfterSuccessLogin);
             }
         }
-        catch (Exception e) {
+        catch (Exception e) {  // 若解析 token 過程中有錯誤則中斷請求
             logger.error(e.getMessage(), e);
 
             Map<String, String> errorMsg = new LinkedHashMap<>();
@@ -66,11 +66,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             objectMapper.writeValue(response.getWriter(), errorMsg);
             return;
         }
-
+        // 若在這個過濾器運作正常(1. 沒 token；2. 有 token 且驗證成功)，則將請求交由下一個過濾器進行處理
         filterChain.doFilter(request, response);
     }
 
-    private boolean isBlankString(String string) {
-        return string == null || string.trim().isEmpty();
+    private boolean isBlankString(String bearer) {
+        return bearer == null || bearer.trim().isEmpty();
     }
 }
